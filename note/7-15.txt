@@ -1,0 +1,8 @@
+USB CAM用：
+使用videocapture from http://videocapture.sourceforge.net/
+install PIL 1.1.7 from http://www.pythonware.com/products/pil/
+
+影像辨識用：
+numpy: https://pypi.python.org/pypi/numpy
+scipy: https://pypi.python.org/pypi/scipy/0.12.0
+http://sourceforge.net/projects/scipy/files/scipy/0.11.0/scipy-0.11.0-win32-superpack-python2.7.exe/download
