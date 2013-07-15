@@ -1,8 +1,28 @@
 USB CAM用：
-使用videocapture from http://videocapture.sourceforge.net/
-install PIL 1.1.7 from http://www.pythonware.com/products/pil/
+videocapture : http://videocapture.sourceforge.net/
+PIL 1.1.7 :    http://www.pythonware.com/products/pil/
 
 影像辨識用：
-numpy: https://pypi.python.org/pypi/numpy
-scipy: https://pypi.python.org/pypi/scipy/0.12.0
-http://sourceforge.net/projects/scipy/files/scipy/0.11.0/scipy-0.11.0-win32-superpack-python2.7.exe/download
+numpy :   https://pypi.python.org/pypi/numpy
+scipy :   https://pypi.python.org/pypi/scipy/0.12.0
+          http://sourceforge.net/projects/scipy/files/scipy/0.11.0/scipy-0.11.0-win32-superpack-python2.7.exe/download
+ocropus : https://code.google.com/p/ocropus/
+pyplot :  http://sourceforge.net/projects/matplotlib/files/matplotlib/matplotlib-1.1.0/matplotlib-1.1.0.win32-py2.7.exe/download
+
+google hg git:
+http://mercurial.selenic.com/
+
+OpenCV 2.3.2 documentation:
+http://www.opencv.org.cn/opencvdoc/2.3.2/html/index.html
+
+else:
+利用python PIL 將圖片轉成黑白 :
+    http://blog.xuite.net/peeter/diary/14600635
+PIL 影像處理：
+    http://tech.seety.org/python/python_imaging.html
+Canny Edge Detection:
+    http://pythongeek.blogspot.tw/2012/06/canny-edge-detection.html
+github canny:
+    https://github.com/abidrahmank/OpenCV2-Python/blob/master/Official_Tutorial_Python_Codes/3_imgproc/canny.py
+Install OpenCV in Windows for Python:
+    http://opencvpython.blogspot.tw/2012/05/install-opencv-in-windows-for-python.html
