@@ -15,7 +15,7 @@ Written by : Abid K. (abidrahman2@gmail.com) , Visit opencvpython.blogspot.com f
 import cv2
 import numpy as np
 
-img = cv2.imread('messi5.jpg')
+img = cv2.imread('image.jpg')
 h = np.zeros((300,256,3))                                    # image to draw histogram
 
 bins = np.arange(256).reshape(256,1)                         # Number of bins, since 256 colors, we need 256 bins
