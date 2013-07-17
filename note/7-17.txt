@@ -1,0 +1,27 @@
+python opencv2 rotate & fit:
+http://stackoverflow.com/questions/11764575/python-2-7-3-opencv-2-4-after-rotation-window-doesnt-fit-image
+
+python-tesseract:
+https://code.google.com/p/python-tesseract/
+
+opencd code:
+http://opencv-code.com/
+
+Take snapshot from your webcam!
+http://opencv-code.com/quick-tips/take-snapshot-from-your-webcam/
+wow this code is very useful ty!!
+but the code " cap.release()"  must modify its place
+like below¡õ
+
+def take_snapshot(delay=2):
+    ...
+    while True:
+        ...
+        if take_picture and ((cv2.getTickCount()-t0) / cv2.getTickFrequency()) > delay:
+            cv2.imwrite(str(filenum) + ".jpg", frame)
+            filenum += 1
+            take_picture = False
+        #cap.release()   #original place
+    cap.release()         #modify place
+
+and thank you again!!

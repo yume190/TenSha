@@ -33,22 +33,29 @@ CV_CHAIN_APPROX_TC89_L1,CV_CHAIN_APPROX_TC89_KCOS applies one of the flavors of 
 #contours,hierarchy = cv2.findContours(thresh,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)
 contours,hierarchy = cv2.findContours(thresh,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)
 for cnt in contours:
-    if (350 < cv2.contourArea(cnt)) and (cv2.contourArea(cnt)<1900):
+    #if (350 < cv2.contourArea(cnt)) and (cv2.contourArea(cnt)<1900):
+    if (350 < cv2.contourArea(cnt)):
         if(cv2.contourArea(cnt)<500) :                   #it is number
             pass
         if(1700 < cv2.contourArea(cnt)) :                #it is symbol
             pass
         [x,y,w,h] = cv2.boundingRect(cnt)
-        if  h>28:
-            print cv2.contourArea(cnt),cv2.boundingRect(cnt)
-            cv2.rectangle(im,(x,y),(x+w,y+h),(0,255,0),2)
-            roi = thresh[y:y+h,x:x+w]
-            roismall = cv2.resize(roi,(10,10))
-            roismall = roismall.reshape((1,100))
-            roismall = np.float32(roismall)
-            retval, results, neigh_resp, dists = model.find_nearest(roismall, k = 1)
-            string = str(int((results[0][0])))
-            cv2.putText(out,string,(x,y+h),0,1,(0,255,0))
+        #if  h>28:
+        rect = cv2.minAreaRect(cnt)
+        box = cv2.cv.BoxPoints(rect)
+        box = np.int0(box)
+        cv2.drawContours(im,[box],0,(255,0,0),2)
+        print cv2.contourArea(cnt),cv2.boundingRect(cnt)," : "
+        print box
+        
+        cv2.rectangle(im,(x,y),(x+w,y+h),(0,255,0),2)
+        roi = thresh[y:y+h,x:x+w]
+        roismall = cv2.resize(roi,(10,10))
+        roismall = roismall.reshape((1,100))
+        roismall = np.float32(roismall)
+        retval, results, neigh_resp, dists = model.find_nearest(roismall, k = 1)
+        string = str(int((results[0][0])))
+        cv2.putText(out,string,(x,y+h),0,1,(0,255,0))
 
 plt.subplot(1,2,1),plt.imshow(im,'gray')
 plt.title('in')
