@@ -1,0 +1,5 @@
+gtk:
+http://sourceforge.net/projects/gtk-win/files/GTK%2B%20Runtime%20Environment/GTK%2B%202.24/
+
+install gtk(gtk pygtk...)
+http://www.youtube.com/watch?v=zMw9vQH_U84
