@@ -2,7 +2,7 @@ import cv2.cv as cv
 import tesseract
 
 #image=cv.LoadImage("eurotext.jpg", cv.CV_LOAD_IMAGE_GRAYSCALE)
-image=cv.LoadImage("imagex.jpg", cv.CV_LOAD_IMAGE_GRAYSCALE)
+image=cv.LoadImage("t1.jpg", cv.CV_LOAD_IMAGE_GRAYSCALE)
 
 api = tesseract.TessBaseAPI()
 api.Init(".","eng",tesseract.OEM_DEFAULT)

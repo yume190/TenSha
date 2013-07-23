@@ -16,6 +16,7 @@ model.train(samples,responses)
 im = cv2.imread('th3.jpg')
 out = np.zeros(im.shape,np.uint8)
 gray = cv2.cvtColor(im,cv2.COLOR_BGR2GRAY)
+gray = cv2.medianBlur(gray,5)
 thresh = cv2.adaptiveThreshold(gray,255,1,1,11,2)
 
 #cv2.findContours(image, mode, method[, contours[, hierarchy[, offset]]]) -> contours, hierarchy
@@ -34,13 +35,11 @@ CV_CHAIN_APPROX_TC89_L1,CV_CHAIN_APPROX_TC89_KCOS applies one of the flavors of 
 contours,hierarchy = cv2.findContours(thresh,cv2.RETR_LIST,cv2.CHAIN_APPROX_SIMPLE)
 for cnt in contours:
     #if (350 < cv2.contourArea(cnt)) and (cv2.contourArea(cnt)<1900):
-    if (350 < cv2.contourArea(cnt)):
-        if(cv2.contourArea(cnt)<500) :                   #it is number
-            pass
-        if(1700 < cv2.contourArea(cnt)) :                #it is symbol
-            pass
+    if (100 < cv2.contourArea(cnt)) and (cv2.contourArea(cnt)<900):
         [x,y,w,h] = cv2.boundingRect(cnt)
-        #if  h>28:
+        
+        if (w>50) or (h>50):
+            continue
         rect = cv2.minAreaRect(cnt)
         box = cv2.cv.BoxPoints(rect)
         box = np.int0(box)

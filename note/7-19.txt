@@ -1,0 +1,4 @@
+numpy 英文教學:
+http://wiki.scipy.org/Tentative_NumPy_Tutorial
+numpy function list:
+http://wiki.scipy.org/Numpy_Functions_by_Category
