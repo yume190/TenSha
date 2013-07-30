@@ -35,7 +35,7 @@ gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
 
 cv2.namedWindow('canny demo')
 
-#cv2.createTrackbar('Min threshold','canny demo',lowThreshold, max_lowThreshold, CannyThreshold)
+cv2.createTrackbar('Min threshold','canny demo',lowThreshold, max_lowThreshold, CannyThreshold)
 
 CannyThreshold(0)  # initialization
 endtime = datetime.now()

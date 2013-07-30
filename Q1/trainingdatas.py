@@ -5,6 +5,8 @@ import sys
 
 from edge import *
 from deskew import *
+from corner import *
+from keyvalue import *
 
 #######   some lambda func ###############
 l = lambda s: cv2.boundingRect(s)[0]
@@ -13,29 +15,47 @@ u = lambda s: cv2.boundingRect(s)[1]
 d = lambda s: cv2.boundingRect(s)[1] + cv2.boundingRect(s)[3]
 ##########################################
 
-#some key value
-j = [74,106] #key j J
-q = [81,113] #key q Q
-k = [75,107] #key k K
-number0to9 = [i for i in range(48,58)] #key 0 to 9
-spade = [85,115] #key s S
-heart = [72,104] #key h H
-diamond = [68,100] #key d D
-club = [67,99] #key c C
-keysOfPokerNumber = number0to9 + j + q + k
-keysOfPokerSymbol = spade + heart + diamond + club
-keys = keysOfPokerNumber + keysOfPokerSymbol
-
-symbols = ['spade' , 'heart' , 'diamond' , 'club']
+def getcornerimage(imgrotate):
+    t1 = imgrotate[cornerup:cornerdown,cornerleft:cornerright]
+    t2 = imgrotate[cornerleft:cornerright,acornerdown:acornerup]
+    t3 = imgrotate[acornerright:acornerleft,cornerup:cornerdown]
+    t4 = imgrotate[acornerdown:acornerup,acornerright:acornerleft]
+    #t2 = t2.T[::-1,:]
+    #t3 = t3.T[:,::-1]
+    #t4 = t4[::-1,::-1]
+    t2 = rotateImage2(t2,90)#[30:130,180:220]
+    t3 = rotateImage2(t3,270)#[30:130,180:220]
+    t4 = rotateImage(t4,180)#[50:150,20:60]
+    t2 = t2[0.5 * t2.shape[0] - 0.5 * (cornerdown - cornerup):0.5 * t2.shape[0] + 0.5 * (cornerdown - cornerup),0.5 * t2.shape[1] - 0.5 * (cornerright - cornerleft):0.5 * t2.shape[1] + 0.5 * (cornerright - cornerleft)]
+    t3 = t3[0.5 * t3.shape[0] - 0.5 * (cornerdown - cornerup):0.5 * t3.shape[0] + 0.5 * (cornerdown - cornerup),0.5 * t3.shape[1] - 0.5 * (cornerright - cornerleft):0.5 * t3.shape[1] + 0.5 * (cornerright - cornerleft)]
+    t4 = t4[0.5 * t4.shape[0] - 0.5 * (cornerdown - cornerup):0.5 * t4.shape[0] + 0.5 * (cornerdown - cornerup),0.5 * t4.shape[1] - 0.5 * (cornerright - cornerleft):0.5 * t4.shape[1] + 0.5 * (cornerright - cornerleft)]
+    return t1,t2,t3,t4
+    
+def issymbol(x,y,w,h,area):
+    if(area<450) :                   #it is small symbol
+        if (17<h)and(h<28):
+            if (15<w)and(w<30):
+                return True
+    return False
+    
+def isnumber(x,y,w,h,area):
+    if(y+h) > 80:
+        return False
+    if(350<area) :                   #it is small symbol
+        #if (20<h)and(h<60):
+            #if (15<w)and(w<30):
+        return True
+    return False
 
 #######   training part    ############### 
-#samples = np.loadtxt('generalsamples.data',np.float32)
-#responses = np.loadtxt('generalresponses.data',np.float32)
+samples = np.loadtxt('generalsamples.data',np.float32)
+responses = np.loadtxt('generalresponses.data',np.float32)
 #responses = responses.reshape((responses.size,1))
 
-responses = []
-samples =  np.empty((0,100))
+responses = responses.tolist()
+#samples =  np.empty((0,100))
 
+symbols = ['spade' , 'heart' , 'diamond' , 'club']
 for symbol in symbols:
     for dirPath, dirNames, fileNames in os.walk(os.path.join('training data',symbol)):
         for f in fileNames:
@@ -44,31 +64,16 @@ for symbol in symbols:
             
             im = cv2.imread(filename)
             out = np.zeros(im.shape,np.uint8)
-            gray = cv2.cvtColor(im,cv2.COLOR_BGR2GRAY)
-            #gray = cv2.medianBlur(gray,5)
-            gray = cv2.GaussianBlur(gray,(5,5),0)
-            thresh = cv2.adaptiveThreshold(gray,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,1,11,3)
+            img = cv2.cvtColor(im,cv2.COLOR_RGB2GRAY)
+            img = cv2.medianBlur(img,5)
+            img = cv2.adaptiveThreshold(img,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,1,11,3)
             
-            img = cutpoker(thresh)
+            img = cutpoker(img)
             angel = getdeskewangle(img)
             imgrotate = rotateImage(img,angel)
             imgrotate = cutpoker(imgrotate)
-            
-            cv2.imshow('cut',img)
-            cv2.imshow('rotate',imgrotate)
-            t1 = imgrotate[20:120,20:60]
-            t2 = imgrotate[20:60,-120:-20]
-            t3 = imgrotate[-60:-20,20:120]
-            t4 = imgrotate[-120:-20,-60:-20]
-            t2 = rotateImage2(t2,90)[30:130,180:220]
-            t3 = rotateImage2(t3,270)[30:130,180:220]
-            t4 = rotateImage(t4,180)[50:150,20:60]
-            cv2.imshow('target1',t1)
-            cv2.imshow('target2',t2)
-            cv2.imshow('target3',t3)
-            cv2.imshow('target4',t4)
-            targets = [t1,t2,t3,t4]
-            #targets = [t1]
+
+            targets = [t1,t2,t3,t4] = getcornerimage(imgrotate)
             
             #################      Now finding Contours         ###################
             
@@ -78,12 +83,13 @@ for symbol in symbols:
 
                 #contours.sort(key = l)
                 for cnt in contours:
-                    if (100 < cv2.contourArea(cnt)) and (cv2.contourArea(cnt)<1000):
+                    area = cv2.contourArea(cnt)
+                    if (100 < area) and (area<1200):
                         [x,y,w,h] = cv2.boundingRect(cnt)
                         
-                        if (w>50) or (h>50):
+                        if not (isnumber(x,y,w,h,area) or issymbol(x,y,w,h,area)):
                             continue
-                            
+                        
                         cv2.rectangle(show,(x,y),(x+w,y+h),255,2)
                         roi = target[y:y+h,x:x+w]
                         roismall = cv2.resize(roi,(10,10))
@@ -96,6 +102,10 @@ for symbol in symbols:
                         key = cv2.waitKey(0)
 
                         if key == 27:
+                            responses = np.array(responses,np.float32)
+                            responses = responses.reshape((responses.size,1))
+                            np.savetxt('generalsamples.data',samples)
+                            np.savetxt('generalresponses.data',responses)
                             sys.exit()
                         elif key in keys:
                             #responses.append(int(chr(key)))
@@ -107,8 +117,8 @@ for symbol in symbols:
                         else:
                             cv2.rectangle(show,(x,y),(x+w,y+h),0,2)
                             pass
+                            
 responses = np.array(responses,np.float32)
-#responses = np.array(responses)
 responses = responses.reshape((responses.size,1))
 print "training complete"
 
